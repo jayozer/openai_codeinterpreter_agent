@@ -1,14 +1,17 @@
 # PythonREPL Agent
-#CSV Agent
-#Router Agent
-#OpenAI Functions
-# langchain-experiemental - used for prerelease. 
+# CSV Agent
+# Router Agent
+# OpenAI Functions
+# langchain-experiemental - used for prerelease.
 # qrcode is installed for testing
 # https://smith.langchain.com/hub/langchain-ai/react-agent-template
 
 from dotenv import load_dotenv
+
 load_dotenv()
 from langchain import hub
+
+# experimental - instead of directly instantiating the ChatOpenAI class, init_chat_model() helper function checks the availability and access requirements for the model.
 from langchain_openai import ChatOpenAI
 from langchain.chat_models import init_chat_model
 
@@ -18,7 +21,7 @@ from langchain_experimental.tools import PythonREPLTool
 
 def main():
     print("Start...")
-#addtional instructions to be added to react prompt
+    # addtional instructions to be added to react prompt
     instructions = """You are an agent designed to write and execute python code to answer questions.
         You have access to a python REPL, which you can use to execute python code.
         You have qrcode package installed
@@ -34,13 +37,17 @@ def main():
     tools = [PythonREPLTool()]
     python_agent = create_react_agent(
         prompt=prompt,
-        llm=init_chat_model(temperature=0, model="gpt-4o"),
+        llm=init_chat_model(
+            temperature=0, model="gpt-4o"
+        ),  # using init_chat_model for gpt-4o
         tools=tools,
     )
 
-    python_agent_executor = AgentExecutor(agent=python_agent, tools=tools, verbose=True) #verbose = True is to see extra logs
+    python_agent_executor = AgentExecutor(
+        agent=python_agent, tools=tools, verbose=True
+    )  # verbose = True is to see extra logs
 
-    #invoke agent
+    # invoke agent
     python_agent_executor.invoke(
         input={
             "input": """generate and save in current working directory in a folder called qrcode2 15 QRcodes
@@ -49,6 +56,5 @@ def main():
     )
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
